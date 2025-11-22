@@ -160,24 +160,9 @@ body::before {
     margin: 0;
   }
 
-  .gallery-btn {
-    background: linear-gradient(90deg, #e9b60f, #fff6c2);
-    border: none;
-    border-radius: 12px;
-    padding: 10px 25px;
-    font-weight: 600;
-    font-size: 16px;
-    cursor: pointer;
-    color: #222;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-    transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
-  }
 
-  .gallery-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
-    background: linear-gradient(90deg, #fff6c2, #e9b60f);
-  }
+
+ 
 
 
     a{color:var(--purple);text-decoration:none}
@@ -199,15 +184,19 @@ body::before {
   align-items: center;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   z-index: 100;
-
   box-sizing: border-box;
 }
 
 .nav .brand h1,
 .nav .brand .submain {
-  white-space: nowrap; /* or wrap depending on preference */
-  overflow: hidden;
-  text-overflow: ellipsis;
+  flex-wrap: wrap;
+}
+
+.nav .brand .submain{
+   font-family: 'Montserrat', sans-serif;
+            font-size: 9px;
+            letter-spacing: 1px;
+  color: var(--color-text--secondary);
 }
 
 /* Brand */
@@ -215,7 +204,6 @@ body::before {
   display: flex;
   align-items: center;
   gap: 5px;
-  flex-wrap: wrap;
 }
 
 .brand img {
@@ -248,7 +236,7 @@ body::before {
 .nav-links {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 12px;
 }
 
 .nav-links a {
@@ -415,6 +403,8 @@ p{
   text-align: center;
 }
 
+
+
 /* Hover effect for depth */
 .title:hover {
   text-shadow:
@@ -436,11 +426,9 @@ p{
 }
 
 
-
-
       /* HERO */
 .hero {
-  margin-top: 50px;
+  margin-top: 80px;
   display: flex;
   align-items: center;
   text-align: center;
@@ -740,12 +728,13 @@ p{
   flex-direction: row;
   gap: 10px;
   padding: 10px;
-  background: #e0e0e0;
+  background: #e9e9e9;
   border-radius: 8px;
   border-width: 2px;
   border-color:  #c5c5c5;
   cursor: pointer;
   transition: 0.2s;
+
 }
 
 .choice-row.active{
@@ -753,7 +742,7 @@ p{
 }
 
 .choice-row:hover {
-  background: #d4d4d4;
+  background: #dfdfdf;
 }
 
 .quiz-btn-container {
@@ -797,6 +786,7 @@ p{
 .radio-choice{
   width: fit-content;
   margin-right: 5px;
+ 
 }
 
 .choice-row.correct {
@@ -920,16 +910,38 @@ p{
       line-height: 1.4;
 }
 
-.hero .message{
+.message{
   color: var(--color-text-secondary);
+}
+
+.gallery-btn{
+  color: var(--color-purple);
+  font-size: 1.4rem;
+  cursor: pointer;
+ 
+}
+
+.saints-title{
+  font-size:30px;
+}
+
+section{
+  padding-top: 90px;
+}
+
+#reload-btn{
+   position: absolute;
+  top: 15px;
+  left: 15px;
+  font-size:20px
 }
 
 /* Mobile Menu */
 @media (max-width: 700px) {
   .nav-links {
     position: absolute;
-    top: 80px;
-    right: 20px;
+    top: 70px;
+    right: 0px;
     background-color: var(--color-bg);
     flex-direction: column;
     border-radius: 16px;
@@ -939,15 +951,46 @@ p{
     padding: 10px 15px;
   }
 
-   .nav {
-    width: 95%;        /* stays within screen */
+  .nav-links a{
+    font-size: 0.8rem;
+    gap: 2px;
+  }
 
+  button, .hero-cta button{
+    font-size: 0.8rem;
+  }
+
+  .choice-row{
+       font-size: .9rem;
+  }
+
+ .mission p, .vision p, .core-values p {
+  font-size: .9rem;
+  line-height: 1.6;
+}
+
+.values div{
+  font-size: .9rem;
+}
+
+.saints-title{
+  font-size: 1.4rem;
+}
+
+.chapel-strip div, .formation-subtxt, .join-desc, .join-list li
+, .section-quiz #progress, #reload-btn{
+  font-size: .9rem;
+}
+
+
+
+  .nav {
+    width: 95%;        /* stays within screen */
     top: 10px;
     left: 2.5%;        /* same small margin */
     padding: 8px; /* slightly smaller padding for very small screens */
     border-radius: 12px;
-    flex-wrap: wrap; /* allows brand + links to stack if needed */
-
+    justify-content: space-evenly;
   }
   .nav-links.open {
     display: flex;
@@ -955,7 +998,26 @@ p{
 
   .burger {
     display: flex;
+    width: 30px;
+    margin-right: 5px;
   }
+
+  .burger.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+  }
+
+  .burger.active span:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+  }
+
+  .burger span{
+    width: 18px;
+    height: 2px;
+  }
+
+  .btn-primary, .btn-ghost{
+    font-size: .8rem;
+}
 
   .hero h1{
     font-size: 2.8rem;
@@ -1002,8 +1064,6 @@ p{
   }
 
   .brand{
-      flex-wrap: wrap; /* prevents logo + text from overflowing */
-    
     gap: 5px;
   }
 
@@ -1011,10 +1071,10 @@ p{
     font-size: 0.50rem;
   }
 
+  
 
-   body {
-    background-attachment: scroll; /* prevents viewport quirks on mobile */
-  }
+
+ 
     
 }
  

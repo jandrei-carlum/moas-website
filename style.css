@@ -274,7 +274,7 @@ body::before {
 
     box-shadow:
      1px 1px 0 rgba(0,0,0,0.4),
-      2px 2px 0 rgba(0,0,0,0.25);
+     2px 2px 0 rgba(0,0,0,0.25);
   
 }
 
@@ -327,7 +327,7 @@ body::before {
 }
 
 p{
-  font-size: .95rem;
+  font-size: 1rem;
 }
 
 .samzp-overlay {
@@ -435,7 +435,7 @@ p{
 
       /* HERO */
 .hero {
-  margin-top: 80px;
+  margin-top: 40px;
   display: flex;
   align-items: center;
   text-align: center;
@@ -461,8 +461,6 @@ p{
   flex: 1;
 }
 
-
-
     .hero .eyebrow{display:inline-block;
       background: var(--color-gold-light);
       color:var(--color-gold);padding:6px 10px;font-weight:700;font-size:15px}
@@ -486,10 +484,6 @@ p{
 
  
 }
-
-
-
-
     .hero p{margin:0 0 18px 0}
 
     .hero-cta{
@@ -501,15 +495,26 @@ p{
       font-size: medium;
       font-weight: 500;
     }
-    .image-card{
-      border-radius:16px;overflow:hidden;width: 100%; aspect-ratio: 4/3;;background:#eee;display:block;
-      box-shadow:0 10px 30px rgba(16,24,40,0.06);position:relative;
-    }
-    .image-card img{width:100%;height:100%; object-fit:cover;display:block;filter:contrast(1.02) saturate(1.02)}
-    .overlay-grad{
-      position:absolute;inset:0;background:linear-gradient(180deg, rgba(98,0,238,0.14), rgba(255,255,255,0.06));
-      pointer-events:none;
-    }
+.image-card {
+  width: 100%;
+  height: 60vh;        /* hero height, adjusts to screen */
+  border-radius: 16px;
+  overflow: hidden; 
+
+     /* hides the parts that scale beyond the box */
+}
+
+.image-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;   /* fills container */
+  display: block;
+  filter: contrast(1.02) saturate(1.02);
+
+    /* Auto hero scale */
+  transform: scale(2.1);
+}
+
 
     /* SECTIONS */
     section{padding:50px 0;
@@ -1095,7 +1100,21 @@ section{
   }
 
   
+  p{
+    font-size: 1rem;
+  }
 
+  .hero .hero-grid{
+    flex-direction: column-reverse;
+  }
+
+  .hero-grid .image-card img{
+    margin-top: 40px;
+  }
+
+  .hero-grid .left{
+    margin-top: -40px;
+  }
 
  
     

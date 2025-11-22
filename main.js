@@ -125,28 +125,6 @@ fetch('quiz.json')
    
 });
 
-function closeQuizResult(){
-   let quizContainer = document.getElementById('quizResModal')
-
-   quizContainer.style.display = 'none'
-
-  reloadQuizContent()
-}
-
-document.getElementById('quiz-again').addEventListener('click', ()=>{
-  // reload quiz content
-    let quizContainer = document.getElementById('quizResModal')
-
-    quizContainer.style.display = 'none'
-
-    reloadQuizContent()
-
-})
-
-document.getElementById('reload-btn').addEventListener('click', ()=>{
-   reloadQuizContent()
-})
-
 
 function initQuiz(quizData) {
   let current_quiz = 0;
@@ -155,8 +133,10 @@ function initQuiz(quizData) {
   const resultEl = document.getElementById("result");
   let nextButton = document.getElementById("nextBtn")
   let prevButton = document.getElementById("prevBtn")
-
+  // reload quiz content
+  let quizContainer = document.getElementById('quizResModal')
   let progress = document.getElementById('progress')
+  
   progress.innerText = (current_quiz + 1) + "/7"
 
   let guestAnswer = [];
@@ -165,6 +145,31 @@ function initQuiz(quizData) {
     const submitBtn = document.getElementById("submitBtn");
     submitBtn.style.display = (current_quiz === quizData.length - 1) ? "inline-block" : "none";
   }
+
+document.getElementById('quiz-again').addEventListener('click', ()=>{
+
+    quizContainer.style.display = 'none'
+
+    activateNext()
+    reloadQuizContent()
+
+})
+
+document.getElementById('closeResult').addEventListener('click', ()=>{
+
+  quizContainer.style.display = 'none'
+  activateNext()
+  reloadQuizContent()
+
+})
+
+document.getElementById('reload-btn').addEventListener('click', ()=>{
+
+   activateNext()
+   activatePrevious()
+
+   reloadQuizContent()
+})
 
   inActivatePrevious()
 
@@ -288,9 +293,11 @@ document.getElementById("submitBtn").addEventListener("click", () => {
    guestAnswer.forEach((ga) => {
       if (ga.correct == ga.guest) {
         score++;
+        console.log(ga.correct, guestAnswer.guest)
       }
     });
 
+    console.log(score)
 
     quizScore.innerText = score + " / " + quizData.length
 

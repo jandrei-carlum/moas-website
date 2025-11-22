@@ -538,30 +538,41 @@
       </div>
     </section>
 
-   
-<section class="section section-quiz">
 
-  <span id="progress"></span>
-  <h3>Take a short Quiz!</h3>
+<section class="calendar-quiz-section">
 
-  <div class="quiz-container">
-    <p id="question">Question text here</p>
+    <section class="section section-quiz">
 
-    <div id="choices" class="choices">
-      <!-- Radio choices injected by JS -->
+      <span id="progress"></span>
+      <h3>Take a short Quiz!</h3>
+
+      <div class="quiz-container">
+        <p id="question">Question text here</p>
+
+        <div id="choices" class="choices">
+          <!-- Radio choices injected by JS -->
+        </div>
+      </div>
+
+    <div class="quiz-btn-container">
+        <button id="prevBtn">‹</button>  <!-- left thin chevron -->
+        <button id="submitBtn">Submit</button>
+    <button id="nextBtn">›</button>  <!-- right thin chevron -->
+
     </div>
-  </div>
+      <p id="result" class="result"></p>
+      <i id="reload-btn" style="
+    " class="fa">&#xf021;</i>
+    </section>
 
-<div class="quiz-btn-container">
-    <button id="prevBtn">‹</button>  <!-- left thin chevron -->
-    <button id="submitBtn">Submit</button>
-<button id="nextBtn">›</button>  <!-- right thin chevron -->
 
-</div>
-  <p id="result" class="result"></p>
-  <i id="reload-btn" style="
- " class="fa">&#xf021;</i>
+      <section class="calendar-section">
+     
+    </section>
 </section>
+
+
+
 
 
     <footer style="color: var(--color-text);">
@@ -655,7 +666,7 @@ overflow-y: auto;
 position:fixed;inset:0;background:rgba(0, 0, 0, 0.52);align-items:center;justify-content:center;z-index:101;padding:20px;flex-direction:column;">
     
   <div id="quizContainer" style="border: 1px solid #ccc; padding: 10px;">
-     <button onclick="closeQuizResult()" style="
+     <button id="closeResult" style="
       float:right;border:0;background:transparent; font-size:20px;cursor:pointer; color: var(--color-text--secondary);"><i class="fa fa-times"></i></button>
     
       <h2

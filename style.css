@@ -610,6 +610,7 @@ p{
 
     /* Chapels */
 .chapel-strip {
+  width: 100%;
   padding: 18px;
   border-radius: 16px;
   overflow: hidden;
@@ -634,7 +635,7 @@ p{
       gap:12px}
     .chapel-card{background: var(--color-bg);
       position: relative;
-      width: fit-content;
+      width: 100%;
       padding:12px;border-radius:10px;
       display:flex;gap:10px;align-items:center;
       box-shadow:0 10px 24px rgba(16,24,40,0.04);

@@ -382,6 +382,7 @@ loadQuiz();
 document.querySelectorAll('.chapel-card').forEach(card => {
   card.addEventListener('click', () => {
     card.classList.toggle('expanded');
+    card.classList.toggle('active');
   });
 });
 

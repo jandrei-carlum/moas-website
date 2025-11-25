@@ -675,6 +675,17 @@ p{
   gap: 12px;
 }
 
+.chapel-card .arrow {
+  display: inline-block;
+  margin-left: 8px;
+  transition: transform .3s ease;
+  font-size: 1rem;
+}
+
+.chapel-card.active .arrow {
+  transform: rotate(180deg); /* flips arrow up */
+}
+
 .chapel-card a{
   color: #3d73ff;
   text-decoration: underline;
@@ -695,7 +706,7 @@ p{
   transition: opacity .5s ease, transform .5s ease;
   margin-top: 10px;
   font-size: .9rem;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.2);
   padding: 9px;
   border-radius: 8px;
   text-align: justify;

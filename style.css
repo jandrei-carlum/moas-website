@@ -611,11 +611,10 @@ p{
     /* Chapels */
 .chapel-strip {
   width: 100%;
-  padding: 18px;
+  padding: 5px;
   border-radius: 16px;
   overflow: hidden;
   position: relative;
- 
 }
 
 @keyframes gradientShift {
@@ -631,11 +630,11 @@ p{
       flex-wrap: wrap;
       flex-direction: row;
       align-content: space-evenly;
-      width: 100%;
       gap:12px}
     .chapel-card{background: var(--color-bg);
       position: relative;
-      width: 100%;
+      width: fit-content;
+      max-width: 400px;
       padding:12px;border-radius:10px;
       display:flex;gap:10px;align-items:center;
       box-shadow:0 10px 24px rgba(16,24,40,0.04);
@@ -1214,7 +1213,7 @@ section{
     left: 2.5%;        /* same small margin */
     padding: 8px; /* slightly smaller padding for very small screens */
     border-radius: 12px;
-    justify-content: space-evenly;
+    justify-content: space-between;
   }
   .nav-links.open {
     display: flex;
@@ -1321,11 +1320,11 @@ section{
     
   .chapel-grid{
     flex-direction: column;
-    align-content: flex-start;
+    
   }
 
   .chapel-card{
-     width: 90%;
+     width: 100%;
   }
 }
  

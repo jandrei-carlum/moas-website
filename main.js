@@ -100,289 +100,278 @@ document.addEventListener('keydown', (e) => {
   }
 });
 
+/**********************
+ *  GLOBAL STATE
+ **********************/
+let jsonQuizContents = null; 
+let quizData = [];
+let guestAnswer = [];
+let current_quiz = 0;
 
-// --------------------- QUIZ
-let jsonQuizContents = null
-
-function reloadQuizContent(){
- // Shuffle array
+/**********************
+ *  LOAD & RELOAD QUIZ
+ **********************/
+function reloadQuizContent() {
+    // Shuffle master list
     jsonQuizContents.sort(() => 0.5 - Math.random());
 
-    // Pick first 7 questions
-    const quizData = jsonQuizContents.slice(0, 7);
+    // Pick 7
+    quizData = jsonQuizContents.slice(0, 7);
 
-    // Then initialize quiz
-    initQuiz(quizData);
+    // Reset state
+    guestAnswer = [];
+    current_quiz = 0;
+
+    updateProgress();
+    loadQuiz();
 }
 
-fetch('quiz.json')
-  .then(res => res.json())
-  .then(allQuestions => {
+/**********************
+ *  INIT (RUNS ONCE)
+ **********************/
+function initQuiz() {
+    const nextBtn = document.getElementById("nextBtn");
+    const prevBtn = document.getElementById("prevBtn");
+    const submitBtn = document.getElementById("submitBtn");
 
-    jsonQuizContents = allQuestions
+    // ————— Navigation —————
+    nextBtn.addEventListener("click", handleNext);
+    prevBtn.addEventListener("click", handlePrev);
+    submitBtn.addEventListener("click", handleSubmit);
 
-    reloadQuizContent()
-   
-});
+    // ————— Choice selection (radio highlight) —————
+    document.getElementById("choices").addEventListener("change", e => {
+        if (e.target.matches('input[type="radio"]')) {
+            document.querySelectorAll(".choice-row").forEach(r => r.classList.remove("active"));
+            e.target.closest(".choice-row").classList.add("active");
+        }
+    });
 
+    // ————— Restart buttons —————
+    document.getElementById('quiz-again').addEventListener('click', restartQuiz);
+    document.getElementById('closeResult').addEventListener('click', restartQuiz);
+    document.getElementById('reload-btn').addEventListener('click', restartQuiz);
 
-function initQuiz(quizData) {
-  let current_quiz = 0;
-  const questionEl = document.getElementById("question");
-  const choicesEl = document.getElementById("choices");
-  const resultEl = document.getElementById("result");
-  let nextButton = document.getElementById("nextBtn")
-  let prevButton = document.getElementById("prevBtn")
-  // reload quiz content
-  let quizContainer = document.getElementById('quizResModal')
-  let progress = document.getElementById('progress')
-  
-  progress.innerText = (current_quiz + 1) + "/7"
+    // FIRST QUIZ LOAD HAPPENS AFTER FETCH
+}
 
-  let guestAnswer = [];
+/**********************
+ *  HELPERS
+ **********************/
+function updateProgress() {
+    document.getElementById("progress").innerText = `${current_quiz + 1} / 7`;
+}
 
-  function updateButtons() {
+function activateNext() {
+    const btn = document.getElementById("nextBtn");
+    btn.disabled = false;
+    btn.style.opacity = "1";
+}
+
+function inActivateNext() {
+    const btn = document.getElementById("nextBtn");
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+}
+
+function activatePrevious() {
+    const btn = document.getElementById("prevBtn");
+    btn.disabled = false;
+    btn.style.opacity = "1";
+}
+
+function inActivatePrevious() {
+    const btn = document.getElementById("prevBtn");
+    btn.disabled = true;
+    btn.style.opacity = "0.7";
+}
+
+function updateButtons() {
     const submitBtn = document.getElementById("submitBtn");
     submitBtn.style.display = (current_quiz === quizData.length - 1) ? "inline-block" : "none";
-  }
 
-document.getElementById('quiz-again').addEventListener('click', ()=>{
+    if (current_quiz === 0) inActivatePrevious();
+    else activatePrevious();
 
-    quizContainer.style.display = 'none'
-
-    activateNext()
-    reloadQuizContent()
-
-})
-
-document.getElementById('closeResult').addEventListener('click', ()=>{
-
-  quizContainer.style.display = 'none'
-  activateNext()
-  reloadQuizContent()
-
-})
-
-document.getElementById('reload-btn').addEventListener('click', ()=>{
-
-   activateNext()
-   activatePrevious()
-
-   reloadQuizContent()
-})
-
-  inActivatePrevious()
-
-  choicesEl.addEventListener("change", e => {
-  if (e.target.matches('input[type="radio"]')) {
-    document.querySelectorAll(".choice-row").forEach(r => r.classList.remove("active"));
-    e.target.closest(".choice-row").classList.add("active");
-  }
-
-  });
-
-function showResult(quizData, guestAnswer) {
-  const questResult = document.getElementById('quizContent');
-  questResult.innerHTML = ""; // clear previous results
-
-  quizData.forEach((q, qIdx) => {
-    const qDiv = document.createElement("div");
-    qDiv.classList.add("review-question");
-
-    const qTitle = document.createElement("h3");
-    qTitle.textContent = `${qIdx + 1}. ${q.question}`;
-    qDiv.appendChild(qTitle);
-
-    q.choices.forEach((choice, idx) => {
-      const choiceRow = document.createElement("div");
-      choiceRow.classList.add("choice-row");
-      choiceRow.style.display = "flex";
-      choiceRow.style.justifyContent = "space-between"; // icon at the end
-      choiceRow.style.alignItems = "center";
-      choiceRow.style.padding = "6px 10px";
-      choiceRow.style.borderRadius = "4px";
-      choiceRow.style.border = "1px solid #ccc";
-      choiceRow.style.marginBottom = "5px";
-
-      const choiceText = document.createElement("span");
-      choiceText.textContent = choice;
-      choiceRow.appendChild(choiceText);
-
-      const userIndex = guestAnswer[qIdx]?.guest;
-      const correctIndex = q.answer;
-
-      const icon = document.createElement("span"); // icon container
-      icon.style.marginLeft = "10px";
-
-      if (userIndex === idx && userIndex === correctIndex) {
-        choiceRow.style.borderColor = "#4CAF50"; // green
-      
-        icon.textContent = "✔"; // pick any from above
-        icon.style.color = "green"; // match color to meaning
-      } else if (userIndex === idx && userIndex !== correctIndex) {
-        choiceRow.style.borderColor = "#E53935"; // red
-       
-        icon.textContent = "❌";
-      } else if (idx === correctIndex && userIndex !== correctIndex) {
-        choiceRow.style.border = "2px solid #4CAF50"; // correct-answer
-        icon.textContent = "✔"; // pick any from above
-        icon.style.color = "green"; // match color to meaning
-      }
-
-      choiceRow.appendChild(icon);
-      qDiv.appendChild(choiceRow);
-    });
-    questResult.appendChild(qDiv);
-  });
+    if (current_quiz === quizData.length - 1) inActivateNext();
+    else activateNext();
 }
 
+/**********************
+ *  LOAD QUESTION
+ **********************/
 function loadQuiz() {
-  const q = quizData[current_quiz];
-  questionEl.textContent = q.question;
-  choicesEl.innerHTML = "";
-  resultEl.textContent = "";
+    const q = quizData[current_quiz];
 
-  q.choices.forEach((choice, index) => {
-  const row = document.createElement("label");
-  row.classList.add("choice-row");
+    const questionEl = document.getElementById("question");
+    const choicesEl = document.getElementById("choices");
+    const resultEl = document.getElementById("result");
 
-  const isChecked = guestAnswer[current_quiz] && guestAnswer[current_quiz].guest === index;
-  
-  row.innerHTML = `
-    <input class="radio-choice" type="radio" name="choice" value="${index}" ${isChecked ? "checked" : ""}>
-    <span>${choice}</span>
-  `;
+    questionEl.textContent = q.question;
+    choicesEl.innerHTML = "";
+    resultEl.textContent = "";
 
-  if (isChecked) row.classList.add("active");
-  
+    q.choices.forEach((choice, index) => {
+        const row = document.createElement("label");
+        row.classList.add("choice-row");
 
-  choicesEl.appendChild(row);
-  });
+        const isChecked =
+            guestAnswer[current_quiz] &&
+            guestAnswer[current_quiz].guest === index;
 
-  updateButtons();
+        row.innerHTML = `
+            <input class="radio-choice" type="radio" name="choice" value="${index}" ${isChecked ? "checked" : ""}>
+            <span>${choice}</span>
+        `;
+
+        if (isChecked) row.classList.add("active");
+
+        choicesEl.appendChild(row);
+    });
+
+    updateButtons();
 }
 
+/**********************
+ *  SAVE ANSWER
+ **********************/
+function saveAnswer() {
+    const selected = document.querySelector("input[name='choice']:checked");
+    if (!selected) return;
 
-// Save current answer
-function saveAnswer(selected) {
+    const answer = parseInt(selected.value);
 
-  if(selected){
-      const answer = parseInt(selected.value);
-
-      guestAnswer[current_quiz] = {
+    guestAnswer[current_quiz] = {
         question: quizData[current_quiz].question,
         correct: quizData[current_quiz].answer,
         guest: answer
-      };
-  }
-
-  
-  
+    };
 }
 
-document.getElementById("submitBtn").addEventListener("click", () => {
- const selected = document.querySelector("input[name='choice']:checked");
+/**********************
+ *  NAVIGATION
+ **********************/
+function handleNext() {
+    const selected = document.querySelector("input[name='choice']:checked");
+    if (!selected) return;
 
- if(selected != null){
-    saveAnswer(selected);
+    saveAnswer();
 
-    let quizContainer = document.getElementById('quizResModal')
-    let quizScore = document.getElementById('quiz-score')
-    let score = 0
+    if (current_quiz < quizData.length - 1) {
+        current_quiz++;
+        updateProgress();
+        loadQuiz();
+    }
+}
 
-   guestAnswer.forEach((ga) => {
-      if (ga.correct == ga.guest) {
-        score++;
-        console.log(ga.correct, guestAnswer.guest)
-      }
+function handlePrev() {
+    saveAnswer();
+
+    if (current_quiz > 0) {
+        current_quiz--;
+        updateProgress();
+        loadQuiz();
+    }
+}
+
+/**********************
+ *  SUBMIT RESULT
+ **********************/
+function handleSubmit() {
+    const selected = document.querySelector("input[name='choice']:checked");
+    if (!selected) return;
+
+    saveAnswer();
+
+    let score = 0;
+    guestAnswer.forEach(a => {
+        if (a.correct === a.guest) score++;
     });
 
-    console.log(score)
+    document.getElementById("quiz-score").innerText = `${score} / ${quizData.length}`;
 
-    quizScore.innerText = score + " / " + quizData.length
+    document.getElementById("quizResModal").style.display = "block";
 
-    quizContainer.style.display = 'block'
-
-    showResult(quizData, guestAnswer)
- }
- 
-
-});
-
-function activateNext(){
-      nextButton.disabled = false
-      nextButton.style.opacity = '1'
+    showResult();
 }
 
-function inActivateNext(){
-      nextButton.disabled = true
-      nextButton.style.opacity = '0.7'
+function showResult() {
+    const resultBox = document.getElementById('quizContent');
+    resultBox.innerHTML = "";
+
+    quizData.forEach((q, qIdx) => {
+        const qDiv = document.createElement("div");
+        qDiv.classList.add("review-question");
+
+        const qTitle = document.createElement("h3");
+        qTitle.textContent = `${qIdx + 1}. ${q.question}`;
+        qDiv.appendChild(qTitle);
+
+        const userIndex = guestAnswer[qIdx]?.guest;
+        const correctIndex = q.answer;
+
+        q.choices.forEach((choice, idx) => {
+            const choiceRow = document.createElement("div");
+            choiceRow.classList.add("choice-row");
+            choiceRow.style.display = "flex";
+            choiceRow.style.justifyContent = "space-between";
+            choiceRow.style.padding = "6px 10px";
+            choiceRow.style.border = "1px solid #ccc";
+            choiceRow.style.marginBottom = "5px";
+
+            const text = document.createElement("span");
+            text.textContent = choice;
+            choiceRow.appendChild(text);
+
+            const icon = document.createElement("span");
+
+            if (idx === userIndex && idx === correctIndex) {
+                choiceRow.style.borderColor = "#4CAF50";
+                icon.textContent = "✔";
+                icon.style.color = "green";
+            } else if (idx === userIndex && idx !== correctIndex) {
+                choiceRow.style.borderColor = "#E53935";
+                icon.textContent = "❌";
+                icon.style.color = "red";
+            } else if (idx === correctIndex) {
+                choiceRow.style.border = "2px solid #4CAF50";
+                icon.textContent = "✔";
+                icon.style.color = "green";
+            }
+
+            choiceRow.appendChild(icon);
+            qDiv.appendChild(choiceRow);
+        });
+
+        resultBox.appendChild(qDiv);
+    });
 }
 
-function activatePrevious(){
-      prevButton.disabled = false
-      prevButton.style.opacity = '1'
+/**********************
+ *  RESTART QUIZ
+ **********************/
+function restartQuiz() {
+    document.getElementById('quizResModal').style.display = 'none';
+    reloadQuizContent();
 }
 
-function inActivatePrevious(){
-      prevButton.disabled = true
-      prevButton.style.opacity = '0.7'
-}
+/**********************
+ *  FETCH QUESTIONS
+ **********************/
+fetch('quiz.json')
+    .then(res => res.json())
+    .then(allQuestions => {
+        jsonQuizContents = allQuestions;
+        reloadQuizContent();
+        initQuiz(); // ONLY RUNS ONCE
+    });
 
-
-nextButton.addEventListener("click", () => {
-  const selected = document.querySelector("input[name='choice']:checked");
-
-  if(selected != null){
-    saveAnswer(selected);
-    if (current_quiz < quizData.length - 1) {
-    current_quiz++;
-    loadQuiz();
-    progress.innerText = (current_quiz + 1) + "/7"
-    if(current_quiz == 6){
-      inActivateNext()
-      activatePrevious()
-    }
-    else{
-      activateNext()
-      activatePrevious()
-    }
-    }
-  }
-  
-});
-
-prevButton.addEventListener("click", () => {
-  const selected = document.querySelector("input[name='choice']:checked");
-
-      saveAnswer(selected);
-      if (current_quiz > 0) {
-        current_quiz--;
-        loadQuiz();
-        progress.innerText = (current_quiz + 1) + "/7"
-        if(current_quiz == 0){
-          inActivatePrevious()
-          activateNext()
-        }
-        else{
-          activatePrevious()
-          activateNext()
-        }
-      }
-  
- 
-});
-
-loadQuiz();
-
-
- 
-}
-
+/**********************
+ *  EXTRA (Your existing card click)
+ **********************/
 document.querySelectorAll('.chapel-card').forEach(card => {
-  card.addEventListener('click', () => {
-    card.classList.toggle('expanded');
-    card.classList.toggle('active');
-  });
+    card.addEventListener('click', () => {
+        card.classList.toggle('expanded');
+        card.classList.toggle('active');
+    });
 });
-
